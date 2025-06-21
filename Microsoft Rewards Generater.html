@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bing Iframe Explosion</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: lime;
+      font-family: monospace;
+    }
+
+    #iframeContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    iframe {
+      width: 300px;
+      height: 200px;
+      margin: 5px;
+      border: 2px solid lime;
+    }
+
+    #successMessage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      color: lime;
+      text-align: center;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div id="iframeContainer"></div>
+  <div id="successMessage">✅ SUCCESS ✅</div>
+
+  <script>
+    const TOTAL_IFRAMES = 100;
+    let loadedCount = 0;
+
+    function generateRandomString(length = 5) {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    function checkAllLoaded() {
+      if (loadedCount === TOTAL_IFRAMES) {
+        document.getElementById('iframeContainer').remove();
+        document.getElementById('successMessage').style.display = 'block';
+        console.log("🎉 All iframes loaded!");
+      }
+    }
+
+    const container = document.getElementById('iframeContainer');
+
+    for (let i = 0; i < TOTAL_IFRAMES; i++) {
+      const iframe = document.createElement('iframe');
+      const query = generateRandomString();
+      iframe.src = `https://www.bing.com/search?q=${query}&form=TSASDS`;
+
+      iframe.onload = () => {
+        loadedCount++;
+        checkAllLoaded();
+      };
+
+      container.appendChild(iframe);
+    }
+  </script>
+</body>
+</html>
